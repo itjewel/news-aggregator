@@ -35,7 +35,7 @@ class WindowsPipes extends AbstractPipes
     ];
     private $haveReadSupport;
 
-    public function __construct($input, bool $haveReadSupport)
+    public function __construct(mixed $input, bool $haveReadSupport)
     {
         $this->haveReadSupport = $haveReadSupport;
 
@@ -149,7 +149,7 @@ class WindowsPipes extends AbstractPipes
             if ($w) {
                 @stream_select($r, $w, $e, 0, Process::TIMEOUT_PRECISION * 1E6);
             } elseif ($this->fileHandles) {
-                usleep((int) (Process::TIMEOUT_PRECISION * 1E6));
+                usleep(Process::TIMEOUT_PRECISION * 1E6);
             }
         }
         foreach ($this->fileHandles as $type => $fileHandle) {

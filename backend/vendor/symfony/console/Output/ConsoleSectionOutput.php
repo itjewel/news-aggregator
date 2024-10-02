@@ -21,9 +21,9 @@ use Symfony\Component\Console\Terminal;
  */
 class ConsoleSectionOutput extends StreamOutput
 {
-    private $content = [];
-    private $lines = 0;
-    private $sections;
+    private array $content = [];
+    private int $lines = 0;
+    private array $sections;
     private $terminal;
 
     /**
@@ -43,7 +43,7 @@ class ConsoleSectionOutput extends StreamOutput
      *
      * @param int $lines Number of lines to clear. If null, then the entire output of this section is cleared
      */
-    public function clear(?int $lines = null)
+    public function clear(int $lines = null)
     {
         if (empty($this->content) || !$this->isDecorated()) {
             return;
@@ -63,10 +63,8 @@ class ConsoleSectionOutput extends StreamOutput
 
     /**
      * Overwrites the previous output with a new message.
-     *
-     * @param array|string $message
      */
-    public function overwrite($message)
+    public function overwrite(string|iterable $message)
     {
         $this->clear();
         $this->writeln($message);

@@ -27,20 +27,20 @@ use Symfony\Component\HttpKernel\KernelEvents;
  *
  * @final
  *
- * @internal since Symfony 5.3
+ * @internal
  */
 class DebugHandlersListener implements EventSubscriberInterface
 {
-    private $earlyHandler;
-    private $exceptionHandler;
+    private string|object|null $earlyHandler;
+    private ?\Closure $exceptionHandler;
     private $logger;
     private $deprecationLogger;
-    private $levels;
-    private $throwAt;
-    private $scream;
-    private $scope;
-    private $firstCall = true;
-    private $hasTerminatedWithException;
+    private array|int|null $levels;
+    private ?int $throwAt;
+    private bool $scream;
+    private bool $scope;
+    private bool $firstCall = true;
+    private bool $hasTerminatedWithException = false;
 
     /**
      * @param callable|null  $exceptionHandler A handler that must support \Throwable instances that will be called on Exception
@@ -49,19 +49,13 @@ class DebugHandlersListener implements EventSubscriberInterface
      * @param bool           $scream           Enables/disables screaming mode, where even silenced errors are logged
      * @param bool           $scope            Enables/disables scoping mode
      */
-    public function __construct(?callable $exceptionHandler = null, ?LoggerInterface $logger = null, $levels = \E_ALL, ?int $throwAt = \E_ALL, bool $scream = true, $scope = true, $deprecationLogger = null, $fileLinkFormat = null)
+    public function __construct(callable $exceptionHandler = null, LoggerInterface $logger = null, array|int|null $levels = \E_ALL, ?int $throwAt = \E_ALL, bool $scream = true, bool $scope = true, LoggerInterface $deprecationLogger = null)
     {
-        if (!\is_bool($scope)) {
-            trigger_deprecation('symfony/http-kernel', '5.4', 'Passing a $fileLinkFormat is deprecated.');
-            $scope = $deprecationLogger;
-            $deprecationLogger = $fileLinkFormat;
-        }
-
         $handler = set_exception_handler('is_int');
         $this->earlyHandler = \is_array($handler) ? $handler[0] : null;
         restore_exception_handler();
 
-        $this->exceptionHandler = $exceptionHandler;
+        $this->exceptionHandler = null === $exceptionHandler || $exceptionHandler instanceof \Closure ? $exceptionHandler : \Closure::fromCallable($exceptionHandler);
         $this->logger = $logger;
         $this->levels = $levels ?? \E_ALL;
         $this->throwAt = \is_int($throwAt) ? $throwAt : (null === $throwAt ? null : ($throwAt ? \E_ALL : null));
@@ -73,7 +67,7 @@ class DebugHandlersListener implements EventSubscriberInterface
     /**
      * Configures the error handler.
      */
-    public function configure(?object $event = null)
+    public function configure(object $event = null)
     {
         if ($event instanceof ConsoleEvent && !\in_array(\PHP_SAPI, ['cli', 'phpdbg'], true)) {
             return;
@@ -82,7 +76,6 @@ class DebugHandlersListener implements EventSubscriberInterface
             return;
         }
         $this->firstCall = $this->hasTerminatedWithException = false;
-        $hasRun = null;
 
         $handler = set_exception_handler('is_int');
         $handler = \is_array($handler) ? $handler[0] : null;
@@ -145,19 +138,6 @@ class DebugHandlersListener implements EventSubscriberInterface
         if ($this->exceptionHandler) {
             if ($handler instanceof ErrorHandler) {
                 $handler->setExceptionHandler($this->exceptionHandler);
-                if (null !== $hasRun) {
-                    $throwAt = $handler->throwAt(0) | \E_ERROR | \E_CORE_ERROR | \E_COMPILE_ERROR | \E_USER_ERROR | \E_RECOVERABLE_ERROR | \E_PARSE;
-                    $loggers = [];
-
-                    foreach ($handler->setLoggers([]) as $type => $log) {
-                        if ($type & $throwAt) {
-                            $loggers[$type] = [null, $log[1]];
-                        }
-                    }
-
-                    // Assume $kernel->terminateWithException() will log uncaught exceptions appropriately
-                    $handler->setLoggers($loggers);
-                }
             }
             $this->exceptionHandler = null;
         }

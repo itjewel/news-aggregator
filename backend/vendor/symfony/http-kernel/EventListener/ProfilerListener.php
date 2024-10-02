@@ -32,23 +32,23 @@ use Symfony\Component\HttpKernel\Profiler\Profiler;
  */
 class ProfilerListener implements EventSubscriberInterface
 {
-    protected $profiler;
-    protected $matcher;
-    protected $onlyException;
-    protected $onlyMainRequests;
-    protected $exception;
+    private $profiler;
+    private $matcher;
+    private bool $onlyException;
+    private bool $onlyMainRequests;
+    private ?\Throwable $exception = null;
     /** @var \SplObjectStorage<Request, Profile> */
-    protected $profiles;
-    protected $requestStack;
-    protected $collectParameter;
+    private \SplObjectStorage $profiles;
+    private $requestStack;
+    private ?string $collectParameter;
     /** @var \SplObjectStorage<Request, Request|null> */
-    protected $parents;
+    private \SplObjectStorage $parents;
 
     /**
      * @param bool $onlyException    True if the profiler only collects data when an exception occurs, false otherwise
      * @param bool $onlyMainRequests True if the profiler only collects data when the request is the main request, false otherwise
      */
-    public function __construct(Profiler $profiler, RequestStack $requestStack, ?RequestMatcherInterface $matcher = null, bool $onlyException = false, bool $onlyMainRequests = false, ?string $collectParameter = null)
+    public function __construct(Profiler $profiler, RequestStack $requestStack, RequestMatcherInterface $matcher = null, bool $onlyException = false, bool $onlyMainRequests = false, string $collectParameter = null)
     {
         $this->profiler = $profiler;
         $this->matcher = $matcher;
@@ -97,7 +97,7 @@ class ProfilerListener implements EventSubscriberInterface
             return;
         }
 
-        $session = !$request->attributes->getBoolean('_stateless') && $request->hasPreviousSession() && $request->hasSession() ? $request->getSession() : null;
+        $session = $request->hasPreviousSession() && $request->hasSession() ? $request->getSession() : null;
 
         if ($session instanceof Session) {
             $usageIndexValue = $usageIndexReference = &$session->getUsageIndex();

@@ -25,14 +25,14 @@ use Symfony\Component\HttpKernel\Log\DebugLoggerInterface;
 class LoggerDataCollector extends DataCollector implements LateDataCollectorInterface
 {
     private $logger;
-    private $containerPathPrefix;
-    private $currentRequest;
+    private ?string $containerPathPrefix;
+    private $currentRequest = null;
     private $requestStack;
-    private $processedLogs;
+    private ?array $processedLogs = null;
 
-    public function __construct(?object $logger = null, ?string $containerPathPrefix = null, ?RequestStack $requestStack = null)
+    public function __construct(object $logger = null, string $containerPathPrefix = null, RequestStack $requestStack = null)
     {
-        if (null !== $logger && $logger instanceof DebugLoggerInterface) {
+        if ($logger instanceof DebugLoggerInterface) {
             $this->logger = $logger;
         }
 
@@ -43,7 +43,7 @@ class LoggerDataCollector extends DataCollector implements LateDataCollectorInte
     /**
      * {@inheritdoc}
      */
-    public function collect(Request $request, Response $response, ?\Throwable $exception = null)
+    public function collect(Request $request, Response $response, \Throwable $exception = null)
     {
         $this->currentRequest = $this->requestStack && $this->requestStack->getMainRequest() !== $request ? $request : null;
     }
@@ -53,7 +53,7 @@ class LoggerDataCollector extends DataCollector implements LateDataCollectorInte
      */
     public function reset()
     {
-        if ($this->logger instanceof DebugLoggerInterface) {
+        if (isset($this->logger)) {
             $this->logger->clear();
         }
         $this->data = [];
@@ -64,7 +64,7 @@ class LoggerDataCollector extends DataCollector implements LateDataCollectorInte
      */
     public function lateCollect()
     {
-        if (null !== $this->logger) {
+        if (isset($this->logger)) {
             $containerDeprecationLogs = $this->getContainerDeprecationLogs();
             $this->data = $this->computeErrorsCount($containerDeprecationLogs);
             // get compiler logs later (only when they are needed) to improve performance
@@ -222,9 +222,9 @@ class LoggerDataCollector extends DataCollector implements LateDataCollectorInte
         return $logs;
     }
 
-    private function getContainerCompilerLogs(?string $compilerLogsFilepath = null): array
+    private function getContainerCompilerLogs(string $compilerLogsFilepath = null): array
     {
-        if (!$compilerLogsFilepath || !is_file($compilerLogsFilepath)) {
+        if (!is_file($compilerLogsFilepath)) {
             return [];
         }
 

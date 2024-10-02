@@ -24,9 +24,9 @@ use Symfony\Component\VarDumper\Exception\ThrowingCasterException;
  */
 class ExceptionCaster
 {
-    public static $srcContext = 1;
-    public static $traceArgs = true;
-    public static $errorTypes = [
+    public static int $srcContext = 1;
+    public static bool $traceArgs = true;
+    public static array $errorTypes = [
         \E_DEPRECATED => 'E_DEPRECATED',
         \E_USER_DEPRECATED => 'E_USER_DEPRECATED',
         \E_RECOVERABLE_ERROR => 'E_RECOVERABLE_ERROR',
@@ -41,10 +41,10 @@ class ExceptionCaster
         \E_USER_ERROR => 'E_USER_ERROR',
         \E_USER_WARNING => 'E_USER_WARNING',
         \E_USER_NOTICE => 'E_USER_NOTICE',
-        2048 => 'E_STRICT',
+        \E_STRICT => 'E_STRICT',
     ];
 
-    private static $framesCache = [];
+    private static array $framesCache = [];
 
     public static function castError(\Error $e, array $a, Stub $stub, bool $isNested, int $filter = 0)
     {

@@ -31,6 +31,7 @@ class Debug
 
         @ini_set('zend.assertions', 1);
         ini_set('assert.active', 1);
+        ini_set('assert.warning', 0);
         ini_set('assert.exception', 1);
 
         DebugClassLoader::enable();

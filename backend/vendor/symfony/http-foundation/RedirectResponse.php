@@ -48,27 +48,9 @@ class RedirectResponse extends Response
     }
 
     /**
-     * Factory method for chainability.
-     *
-     * @param string $url The URL to redirect to
-     *
-     * @return static
-     *
-     * @deprecated since Symfony 5.1, use __construct() instead.
-     */
-    public static function create($url = '', int $status = 302, array $headers = [])
-    {
-        trigger_deprecation('symfony/http-foundation', '5.1', 'The "%s()" method is deprecated, use "new %s()" instead.', __METHOD__, static::class);
-
-        return new static($url, $status, $headers);
-    }
-
-    /**
      * Returns the target URL.
-     *
-     * @return string
      */
-    public function getTargetUrl()
+    public function getTargetUrl(): string
     {
         return $this->targetUrl;
     }
@@ -80,7 +62,7 @@ class RedirectResponse extends Response
      *
      * @throws \InvalidArgumentException
      */
-    public function setTargetUrl(string $url)
+    public function setTargetUrl(string $url): static
     {
         if ('' === $url) {
             throw new \InvalidArgumentException('Cannot redirect to an empty URL.');
@@ -103,7 +85,6 @@ class RedirectResponse extends Response
 </html>', htmlspecialchars($url, \ENT_QUOTES, 'UTF-8')));
 
         $this->headers->set('Location', $url);
-        $this->headers->set('Content-Type', 'text/html; charset=utf-8');
 
         return $this;
     }
