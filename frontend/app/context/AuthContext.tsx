@@ -1,3 +1,4 @@
+// AuthProvider.tsx
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
@@ -22,43 +23,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [user, setUser] = useState<User | null>(null);
     const [token, setToken] = useState<string | null>(null);
 
-    // Helper function to check if token is JWT
     const isJWT = (token: string) => {
         return token.split('.').length === 3; // A JWT token will have 3 parts
     };
 
-    // Validate if token is a JWT and decode, or treat it as opaque token (non-JWT)
     const isValidToken = (token: string | null): boolean => {
         if (!token) return false;
         try {
             if (isJWT(token)) {
-                const decoded = jwtDecode<User>(token); // Decode if it's a JWT
+                const decoded = jwtDecode<User>(token);
                 return !!decoded; // If decoding succeeds, it's valid
             } else {
-                // Assume the token is valid if it's not a JWT (Laravel API token)
-                return true;
+                return true; // Assume non-JWT tokens are valid
             }
         } catch (error) {
             console.error("Invalid token format:", error);
-            return false; // Return false if token is invalid
+            return false; // Invalid token
         }
     };
 
     useEffect(() => {
         const savedToken = localStorage.getItem('token');
+        console.log('Retrieved token:', savedToken); // Log the retrieved token
         if (savedToken && isValidToken(savedToken)) {
             setToken(savedToken);
             if (isJWT(savedToken)) {
-                const decoded: User = jwtDecode(savedToken); // Decode JWT
+                const decoded: User = jwtDecode(savedToken);
                 setUser(decoded);
             } else {
-                // Handle non-JWT token (e.g., Laravel token)
-                // Optionally, fetch user details from the backend
-                setUser({
-                    id: 1, // Placeholder or fetch from backend
-                    name: 'John Doe',
-                    email: 'johndoe@example.com'
-                });
+                // Placeholder for non-JWT token user data
+                setUser({ id: 1, name: 'John Doe', email: 'johndoe@example.com' });
             }
         }
     }, []);
@@ -66,17 +60,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const login = (token: string) => {
         if (isValidToken(token)) {
             localStorage.setItem('token', token);
+            console.log('Token saved:', token); // Log the saved token
             setToken(token);
             if (isJWT(token)) {
-                const decoded: User = jwtDecode(token); // Decode and set user for JWT
+                const decoded: User = jwtDecode(token);
                 setUser(decoded);
             } else {
-                // Set user for non-JWT token or fetch from API
-                setUser({
-                    id: 1, // Placeholder or fetch from backend
-                    name: 'John Doe',
-                    email: 'johndoe@example.com'
-                });
+                // Placeholder for non-JWT token user data
+                setUser({ id: 1, name: 'John Doe', email: 'johndoe@example.com' });
             }
         } else {
             console.error('Invalid token during login');

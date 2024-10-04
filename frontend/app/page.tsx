@@ -1,17 +1,28 @@
 'use client'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Header from './components/Header';
 import SearchBar from './components/SearchBar';
 import ArticleList from './components/ArticleList';
-import { fetchArticles } from './utils/api';
+import { fetchArticles } from './utils/fetchArticles';
 
 const Home = () => {
   const [articles, setArticles] = useState([]);
 
   const handleSearch = async (query: string) => {
+    // Fetch articles based on the search query
     const fetchedArticles = await fetchArticles(query);
     setArticles(fetchedArticles);
   };
+
+  // Fetch all articles when the component mounts
+  useEffect(() => {
+    const loadArticles = async () => {
+      const fetchedArticles = await fetchArticles(); // Fetch all articles by not passing any query
+      setArticles(fetchedArticles);
+    };
+    
+    loadArticles();
+  }, []);
 
   return (
     <div>
