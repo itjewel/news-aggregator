@@ -13,7 +13,6 @@ class ArticleController extends Controller
     {
         try {
             $articles = Article::all();
-
             return response()->json($articles, 200); // Explicitly return a JSON response with a 200 status code
         } catch (ModelNotFoundException $e) {
             // Handle the exception if articles are not found (this is unlikely with all(), but good for learning)
@@ -24,33 +23,39 @@ class ArticleController extends Controller
         }
     }
 
-    public function search(Request $request)
+    public function searchAndFilter(Request $request): JsonResponse
     {
-        $keyword = $request->input('query'); // Match the 'query' from the frontend request
-        if (!$keyword) {
-            return response()->json(['message' => 'No query provided'], 400);
-        }
-
-        $articles = Article::where('title', 'LIKE', "%$keyword%")->get();
-        return response()->json($articles);
-    }
-
-
-    public function filter(Request $request)
-    {
+        $keyword = $request->input('query');
         $date = $request->input('date');
         $category = $request->input('category');
         $source = $request->input('source');
 
-        return Article::when($date, function ($query) use ($date) {
-            return $query->whereDate('created_at', $date);
-        })
-            ->when($category, function ($query) use ($category) {
-                return $query->where('category', $category);
-            })
-            ->when($source, function ($query) use ($source) {
-                return $query->where('source', $source);
-            })
-            ->get();
+        // Start the query builder
+        $query = Article::query();
+
+        // Apply the search filter if provided
+        if ($keyword) {
+            $query->where('title', 'LIKE', "%$keyword%");
+        }
+
+        // Apply the date filter if provided
+        if ($date) {
+            $query->whereDate('created_at', $date);
+        }
+
+        // Apply the category filter if provided
+        if ($category) {
+            $query->where('category', $category);
+        }
+
+        // Apply the source filter if provided
+        if ($source) {
+            $query->where('source', $source);
+        }
+
+        // Execute the query and get the results
+        $articles = $query->get();
+
+        return response()->json($articles, 200);
     }
 }

@@ -20,6 +20,6 @@ class CreateUserPreferencesTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('user_preferences');
+        Schema::dropIfExists('user_preferences'); // Drops the user_preferences table
     }
 }

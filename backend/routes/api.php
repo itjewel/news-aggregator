@@ -28,12 +28,12 @@ Route::middleware('web')->group(function () {
 // Protected Routes
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/articles', [ArticleController::class, 'index']);
-    Route::get('/articles/search', [ArticleController::class, 'search']);
-    Route::get('/articles/filter', [ArticleController::class, 'filter']);
+    Route::get('/articles/search', [ArticleController::class, 'searchAndFilter']); // Combined search and filter
+    Route::get('/articles/{id}', [ArticleController::class, 'show']); // Fetch a single article by ID
+    Route::post('/articles', [ArticleController::class, 'store']);    // Create a new article
+    Route::put('/articles/{id}', [ArticleController::class, 'update']); // Update an existing article
+    Route::delete('/articles/{id}', [ArticleController::class, 'destroy']); // Delete an article
 });
 
 // Additional routes if needed
-Route::get('/articles/{id}', [ArticleController::class, 'show']); // Fetch a single article by ID
-Route::post('/articles', [ArticleController::class, 'store']);    // Create a new article
-Route::put('/articles/{id}', [ArticleController::class, 'update']); // Update an existing article
-Route::delete('/articles/{id}', [ArticleController::class, 'destroy']); // Delete an article
+// You can also place any other routes here if necessary
