@@ -15,11 +15,16 @@ return new class extends Migration
     {
         Schema::create('articles', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('title')->unique(); // Ensure title is unique
             $table->text('content');
-            $table->string('source');
-            $table->string('category');
+            $table->string('source', 255); // Specify max length if needed
+            $table->string('category', 100)->nullable(); // Made nullable
+            $table->timestamp('published_at')->nullable(); // Add this line
             $table->timestamps();
+
+            // Optional: Indexes for faster querying
+            $table->index('source');
+            $table->index('category');
         });
     }
 
