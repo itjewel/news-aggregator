@@ -14,9 +14,15 @@ class ArticleController extends Controller
 
     public function search(Request $request)
     {
-        $keyword = $request->input('keyword');
-        return Article::where('title', 'LIKE', "%$keyword%")->get();
+        $keyword = $request->input('query'); // Match the 'query' from the frontend request
+        if (!$keyword) {
+            return response()->json(['message' => 'No query provided'], 400);
+        }
+
+        $articles = Article::where('title', 'LIKE', "%$keyword%")->get();
+        return response()->json($articles);
     }
+
 
     public function filter(Request $request)
     {
