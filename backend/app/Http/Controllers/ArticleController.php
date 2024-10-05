@@ -6,56 +6,77 @@ use Illuminate\Http\Request;
 use App\Models\Article;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Validator;
 
 class ArticleController extends Controller
 {
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
         try {
-            $articles = Article::all();
-            return response()->json($articles, 200); // Explicitly return a JSON response with a 200 status code
+            // Get pagination parameters from the request
+            $perPage = $request->input('per_page', 10); // Default to 10 articles per page
+            $currentPage = $request->input('page', 1); // Default to the first page
+
+            // Paginate articles
+            $articles = Article::paginate($perPage, ['*'], 'page', $currentPage);
+
+            return response()->json(['success' => true, 'data' => $articles], 200); // Return paginated results
         } catch (ModelNotFoundException $e) {
-            // Handle the exception if articles are not found (this is unlikely with all(), but good for learning)
-            return response()->json(['message' => 'No articles found'], 404);
+            return response()->json(['success' => false, 'message' => 'No articles found'], 404);
         } catch (\Exception $e) {
-            // Handle other exceptions
-            return response()->json(['message' => 'An error occurred while fetching articles'], 500);
+            return response()->json(['success' => false, 'message' => 'An error occurred while fetching articles'], 500);
         }
     }
 
     public function searchAndFilter(Request $request): JsonResponse
     {
-        $keyword = $request->input('query');
-        $date = $request->input('date');
-        $category = $request->input('category');
-        $source = $request->input('source');
+        // Validate the incoming request
+        $validator = Validator::make($request->all(), [
+            'query' => 'nullable|string|max:255',
+            'date' => 'nullable|date',
+            'category' => 'nullable|string|max:255',
+            'source' => 'nullable|string|max:255',
+            'per_page' => 'nullable|integer|min:1',
+            'page' => 'nullable|integer|min:1',
+        ]);
 
-        // Start the query builder
-        $query = Article::query();
-
-        // Apply the search filter if provided
-        if ($keyword) {
-            $query->where('title', 'LIKE', "%$keyword%");
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'message' => 'Validation failed', 'errors' => $validator->errors()], 422);
         }
 
-        // Apply the date filter if provided
-        if ($date) {
-            $query->whereDate('created_at', $date);
+        try {
+            $keyword = $request->input('query');
+            $date = $request->input('date');
+            $category = $request->input('category');
+            $source = $request->input('source');
+
+            // Get pagination parameters from the request
+            $perPage = $request->input('per_page', 10); // Default to 10 articles per page
+            $currentPage = $request->input('page', 1); // Default to the first page
+
+            // Start the query builder
+            $query = Article::query();
+
+            // Apply filters
+            if ($keyword) {
+                $query->where('title', 'LIKE', "%$keyword%");
+            }
+            if ($date) {
+                $query->whereDate('created_at', $date);
+            }
+            if ($category) {
+                $query->where('category', $category);
+            }
+            if ($source) {
+                $query->where('source', $source);
+            }
+
+            // Execute the query and get the paginated results
+            $articles = $query->paginate($perPage, ['*'], 'page', $currentPage);
+
+            return response()->json(['success' => true, 'data' => $articles], 200);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'An error occurred while fetching articles'], 500);
         }
-
-        // Apply the category filter if provided
-        if ($category) {
-            $query->where('category', $category);
-        }
-
-        // Apply the source filter if provided
-        if ($source) {
-            $query->where('source', $source);
-        }
-
-        // Execute the query and get the results
-        $articles = $query->get();
-
-        return response()->json($articles, 200);
     }
 }

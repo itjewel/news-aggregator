@@ -7,18 +7,18 @@ easy-to-read format
 Stack use Next.js frontend, Laravel backend, and Mysql database. Containerize everything using Docker and Docker Compose.
 
 #Product Structure: <br>
-App Name `news-aggregator` then enter inside after that you see `lunch-vote-backend` and `lunch-vote-frontend`
+App Name `news-aggregator` then enter inside after that you see `backend` and `frontend`
 
 **_ Backend Laravel Install _**
 
-1. Go into the folder `lunch-vote-backend` then open terminal & run command `npm install`
+1. Go into the folder `backend` then open terminal & run command `npm install`
 
 2) After install then run `npm run start:dev`
 3) Then you will get url for backend: `http://localhost:3000/`
 
 **_ Front-end NextJS Install _**
 
-1. Go into the folder `lunch-vote-frontend` then open terminal & run command `composer install`
+1. Go into the folder `frontend` then open terminal & run command `composer install`
 
 2) After install then run `php artisan serve`
 3) Then you will get url for backend: `http://localhost:8000/`

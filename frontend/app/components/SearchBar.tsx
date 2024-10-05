@@ -22,7 +22,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
         placeholder="Search articles..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        className="border rounded p-2"
+        className="border rounded p-2 w-1/2"
       />
       <input
         type="date"
