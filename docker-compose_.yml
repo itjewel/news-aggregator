@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: ./backend  # Path to your Laravel Dockerfile
+      dockerfile: Dockerfile
+    image: laravel-app
+    container_name: laravel-app
+    ports:
+      - "8000:8000"  # Expose Laravel app on port 8000
+    volumes:
+      - ./backend:/var/www/html  # Mount the backend code
+    environment:
+      - DB_CONNECTION=mysql
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=news-aggregator
+      - DB_USERNAME=root
+      - DB_PASSWORD=admin
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    container_name: mysql-db
+    ports:
+      - "3307:3306"  # Expose MySQL on port 3306
+    environment:
+      - MYSQL_DATABASE=news-aggregator
+      - MYSQL_ROOT_PASSWORD=admin
+    volumes:
+      - db_data:/var/lib/mysql  # Persist database data
+
+  frontend:
+    build:
+      context: ./frontend  # Path to your Next.js Dockerfile
+      dockerfile: Dockerfile
+    image: nextjs-app
+    container_name: nextjs-app
+    ports:
+      - "3001:3000"  # Expose Next.js app on port 3000
+    volumes:
+      - ./frontend:/app  # Mount the frontend code
+    depends_on:
+      - app  # Ensure the backend is available before starting the frontend
+
+volumes:
+  db_data:
