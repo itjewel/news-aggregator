@@ -1,32 +1,33 @@
 import React from 'react';
+import dayjs from 'dayjs';
 
 interface Preference {
-  source?: string; // Optional property
-  category?: string; // Optional property
-  author?: string; // Optional property
+  source?: string;
+  category?: string;
+  author?: string;
 }
 
 interface Article {
-  id: string | number; // Adjust this based on your API response (string or number)
+  id: string | number;
   title: string;
   description: string;
   url: string;
-  source?: string; // Optional property to match your filtering
-  category?: string; // Optional property to match your filtering
-  author?: string; // Optional property to match your filtering
+  source?: string;
+  category?: string;
+  author?: string;
+  created_at?: string;
+  published_at?: string;
 }
 
 interface ArticleListProps {
-  articles: Article[]; // Ensure articles is defined as an array
-  preferences?: Preference; // Make preferences optional
+  articles: Article[];
+  preferences?: Preference;
 }
 
 const ArticleList: React.FC<ArticleListProps> = ({ articles = [], preferences = {} }) => {
-  {console.log(articles,'test juairia')}
   const filteredArticles = React.useMemo(() => {
     if (!Array.isArray(articles)) {
-      console.error("Expected articles to be an array, got:", articles);
-      return []; // Return an empty array if articles is not an array
+      return [];
     }
 
     return articles.filter(article => {
@@ -39,18 +40,11 @@ const ArticleList: React.FC<ArticleListProps> = ({ articles = [], preferences = 
 
   return (
     <div className="space-y-4">
-      {console.log(filteredArticles,'juairia')}
       {filteredArticles.length > 0 ? (
         <ul className="space-y-4">
           {filteredArticles.map(article => (
             <li key={article.id} className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
-              <a 
-                href={article.url} 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="text-xl font-semibold text-blue-600 hover:underline"
-                aria-label={`Read more about ${article.title}`} // Improve accessibility
-              >
+              <a href={article.url} target="_blank" rel="noopener noreferrer" className="text-xl font-semibold text-blue-600 hover:underline">
                 {article.title}
               </a>
               <p className="text-gray-600">{article.description}</p>
@@ -58,6 +52,8 @@ const ArticleList: React.FC<ArticleListProps> = ({ articles = [], preferences = 
                 {article.source && <span>Source: {article.source}</span>}
                 {article.category && <span className="ml-2">Category: {article.category}</span>}
                 {article.author && <span className="ml-2">Author: {article.author}</span>}
+                {article.created_at && <span className="ml-2">Created: {dayjs(article.created_at).format('MMMM D, YYYY h:mm A')}</span>}
+                {article.published_at && <span className="ml-2">Published: {dayjs(article.published_at).format('MMMM D, YYYY h:mm A')}</span>}
               </div>
             </li>
           ))}

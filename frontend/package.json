@@ -11,6 +11,7 @@
   "dependencies": {
     "@heroicons/react": "^2.1.5",
     "axios": "^1.7.7",
+    "dayjs": "^1.11.13",
     "jwt-decode": "^3.1.2",
     "next": "14.2.14",
     "react": "^18",

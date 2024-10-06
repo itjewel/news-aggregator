@@ -20,7 +20,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://localhost:3000'], // Your Next.js frontend URL
+    'allowed_origins' => ['*'], // Your Next.js frontend URL
 
     'allowed_origins_patterns' => [],
 

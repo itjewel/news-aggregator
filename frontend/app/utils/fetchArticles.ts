@@ -1,32 +1,44 @@
 import axios from "axios";
 
+interface Filters {
+  date?: string;       // Date filter
+  category?: string;   // Category filter
+  source?: string;     // Source filter
+}
+
 export const fetchArticles = async (
-  query?: string,
+  query: string,
   page: number = 1,
-  limit: number = 10
+  limit: number = 10,
+  filters: Filters = {} // Filters as optional object
 ): Promise<FetchArticlesResponse> => {
   try {
-    const token = localStorage.getItem('token'); // Fetching the token from local storage
+    const token = localStorage.getItem('token');
     const headers = {
-      Authorization: `Bearer ${token}`, // Adding the token to the request headers
+      Authorization: `Bearer ${token}`, // Token for authorization
     };
 
-    // Constructing the URL based on whether a query is provided or not
-    const url = query
-      ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/articles/search?query=${query}&page=${page}&limit=${limit}`
-      : `${process.env.NEXT_PUBLIC_API_BASE_URL}/articles?page=${page}&limit=${limit}`;
+    // Base URL
+    let url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/articles`;
+    // Parameters object for query string
+    const params: { [key: string]: any } = {
+      page,
+      limit,
+      ...(query ? { query } : {}),
+      ...(filters.date ? { date: filters.date } : {}),
+      ...(filters.category ? { category: filters.category } : {}),
+      ...(filters.source ? { source: filters.source } : {}),
+    };
 
-    // Making the API request
-    const response = await axios.get<FetchArticlesResponse>(url, { headers });
+    // Make the request
+    const response = await axios.get<FetchArticlesResponse>(url, { headers, params });
 
-    // Log the full response to ensure data is valid
-    console.log("API Response:", response.data);
-    const articles: Article[] = response.data.data; // Ensure this is an array
-    const totalPages: number = response.data.last_page; // Assuming last_page is correctly returned
+    const articles: Article[] = response.data.data;
+    const totalPages: number = response.data.last_page;
 
-    return { data: articles, last_page: totalPages }; // Return both articles and total pages
+    return { data: articles, last_page: totalPages };
   } catch (error) {
-    console.error("Error fetching articles:", error);
-    throw error; // Rethrow the error for further handling
+    console.error("Error fetching articles:", error.response?.data || error.message);
+    throw error;
   }
 };

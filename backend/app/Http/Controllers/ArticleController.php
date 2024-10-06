@@ -15,66 +15,51 @@ class ArticleController extends Controller
         try {
             // Get pagination parameters from the request
             $perPage = $request->input('per_page', 10); // Default to 10 articles per page
-            $currentPage = $request->input('page', 1); // Default to the first page
+            $currentPage = $request->input('page', 1);  // Default to the first page
 
-            // Paginate articles
-            $articles = Article::paginate($perPage, ['*'], 'page', $currentPage);
+            // Get filters from the request
+            $keyword = $request->input('keyword', '');   // Search keyword for title
+            $date = $request->input('date', '');         // Date filter
+            $category = $request->input('category', ''); // Category filter
+            $source = $request->input('source', '');     // Source filter
 
-            return response()->json(['success' => true, 'data' => $articles], 200); // Return paginated results
-        } catch (ModelNotFoundException $e) {
-            return response()->json(['success' => false, 'message' => 'No articles found'], 404);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'An error occurred while fetching articles'], 500);
-        }
-    }
-
-    public function searchAndFilter(Request $request): JsonResponse
-    {
-        // Validate the incoming request
-        $validator = Validator::make($request->all(), [
-            'query' => 'nullable|string|max:255',
-            'date' => 'nullable|date',
-            'category' => 'nullable|string|max:255',
-            'source' => 'nullable|string|max:255',
-            'per_page' => 'nullable|integer|min:1',
-            'page' => 'nullable|integer|min:1',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['success' => false, 'message' => 'Validation failed', 'errors' => $validator->errors()], 422);
-        }
-
-        try {
-            $keyword = $request->input('query');
-            $date = $request->input('date');
-            $category = $request->input('category');
-            $source = $request->input('source');
-
-            // Get pagination parameters from the request
-            $perPage = $request->input('per_page', 10); // Default to 10 articles per page
-            $currentPage = $request->input('page', 1); // Default to the first page
-
-            // Start the query builder
+            // Query articles
             $query = Article::query();
 
             // Apply filters
-            if ($keyword) {
+            if (!empty($keyword)) {
                 $query->where('title', 'LIKE', "%$keyword%");
             }
-            if ($date) {
-                $query->whereDate('created_at', $date);
+
+            if (!empty($date)) {
+                // Attempt to parse the date
+                try {
+                    // Use Carbon to parse the date in a flexible way
+                    $parsedDate = \Carbon\Carbon::parse($date)->format('Y-m-d');
+
+                    // Debugging: Log or display the parsed date
+
+
+                    // Filter by date, ignoring the time portion
+                    $query->whereDate('created_at', $parsedDate);
+                } catch (\Exception $e) {
+                    return response()->json(['success' => false, 'message' => 'Invalid date format. Please use a valid date'], 400);
+                }
             }
-            if ($category) {
+
+            if (!empty($category)) {
                 $query->where('category', $category);
             }
-            if ($source) {
+            if (!empty($source)) {
                 $query->where('source', $source);
             }
 
-            // Execute the query and get the paginated results
+            // Paginate articles
             $articles = $query->paginate($perPage, ['*'], 'page', $currentPage);
 
-            return response()->json(['success' => true, 'data' => $articles], 200);
+            return response()->json(['success' => true, 'data' => $articles], 200); // Return paginated and filtered results
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['success' => false, 'message' => 'No articles found'], 404);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'An error occurred while fetching articles'], 500);
         }

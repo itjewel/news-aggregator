@@ -30,56 +30,31 @@ const Home = () => {
   const [preferences, setPreferences] = useState<Preference>({});
   const articlesPerPage = 10;
 
-  const handleSearch = async (query: string) => {
+  const loadArticles = async (query: string, page: number, filters: { date?: string; category?: string; source?: string } = {}) => {
     setLoading(true);
     try {
-      const response = await fetchArticles(query, 1, articlesPerPage);
-      console.log("Search Response:", response);
-      const { data, last_page } = response;
-
-      if (data && Array.isArray(data)) {
-        setArticles(data);
-      } else {
-        setArticles([]); // Handle no data case
-      }
-      setCurrentPage(1);
+      const response = await fetchArticles(query, page, articlesPerPage, filters);
+      
+      const { data:{data, last_page} } = response;
+      setArticles(Array.isArray(data) ? data : []);
       setTotalPages(last_page);
     } catch (error) {
-      console.error("Error during search:", error);
+      console.error("Error fetching articles:", error);
+      setArticles([]); // Handle errors gracefully
     } finally {
       setLoading(false);
     }
   };
 
+  const handleSearch = (query: string, filters: { date?: string; category?: string; source?: string }) => {
+    loadArticles(query, 1, filters); // Pass filters along with the query and reset to page 1
+  };
+
   useEffect(() => {
-    const loadArticles = async () => {
-      setLoading(true);
-      try {
-        const response = await fetchArticles('', currentPage, articlesPerPage);
-        console.log("Fetched Articles:", response);
-
-        const { data:{data,last_page},  } = response;
-
-        if (data && Array.isArray(data)) {
-          setArticles(data);
-        } else {
-          setArticles([]); // Handle empty or invalid response
-        }
-       //console.log(data.last_page, 'jewel',last_page)
-        setTotalPages(last_page);
-      } catch (error) {
-        console.error("Error fetching articles:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadArticles();
+    loadArticles('', currentPage); // Load articles on initial render
   }, [currentPage]);
 
-  // New useEffect to log articles whenever they change
   useEffect(() => {
-    console.log("Updated Articles State:", articles);
   }, [articles]);
 
   const handlePageChange = (page: number) => {
@@ -104,7 +79,7 @@ const Home = () => {
             {articles.length > 0 ? (
               <ArticleList articles={articles} preferences={preferences} />
             ) : (
-              <p>No articles found.</p> // Provide feedback if no articles are found
+              <p>No articles found.</p>
             )}
             <div className="flex justify-center mt-4">
               <button

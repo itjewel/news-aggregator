@@ -3,6 +3,7 @@ import Header from '../../components/Header';
 import { useState } from 'react';
 import axiosInstance from '../../utils/axiosInstance';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 const Register = () => {
     const router = useRouter();
@@ -85,6 +86,10 @@ const Register = () => {
                     </form>
                     {error && <p className="mt-4 text-red-600 text-center">{error}</p>}
                     {message && <p className="mt-4 text-green-600 text-center">{message}</p>}
+                    
+                    <Link href="/auth/login" className="underline hover:underline">
+                                Go Login
+                            </Link>
                 </div>
             </div>
         </div>

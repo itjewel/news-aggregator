@@ -4,6 +4,7 @@ import { useState } from 'react';
 import axiosInstance from '../../utils/axiosInstance';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../context/AuthContext'; // Import the useAuth hook
+import Link from 'next/link';
 
 const Login = () => {
     const router = useRouter();
@@ -84,6 +85,9 @@ const Login = () => {
                     </form>
                     {error && <p className="mt-4 text-red-600 text-center">{error}</p>}
                     {message && <p className="mt-4 text-green-600 text-center">{message}</p>}
+                    <Link href="/auth/register" className="underline hover:underline">
+                                Go Register
+                            </Link>
                 </div>
             </div>
         </div>

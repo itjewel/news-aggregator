@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 interface SearchBarProps {
-  onSearch: (query: string, filters: { date?: string; category?: string; source?: string }) => void; // Updated to include filters
+  onSearch: (query: string, filters: { date?: string; category?: string; source?: string }) => void;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
@@ -12,11 +12,13 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSearch(query, { date, category, source }); // Pass filters along with the query
+    // Ensure that all filters are passed correctly
+    onSearch(query, { date, category, source });
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mb-4">
+    <form onSubmit={handleSubmit} className="mb-4 flex items-center space-x-2">
+      {/* Search input field */}
       <input
         type="text"
         placeholder="Search articles..."
@@ -24,27 +26,37 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
         onChange={(e) => setQuery(e.target.value)}
         className="border rounded p-2 w-1/2"
       />
+
+      {/* Date filter */}
       <input
         type="date"
         value={date}
-        onChange={(e) => setDate(e.target.value)} // Date filter
-        className="ml-2 border rounded p-2"
+        onChange={(e) => setDate(e.target.value)}
+        className="border rounded p-2"
       />
+
+      {/* Category filter */}
       <input
         type="text"
         placeholder="Category"
         value={category}
-        onChange={(e) => setCategory(e.target.value)} // Category filter
-        className="ml-2 border rounded p-2"
+        onChange={(e) => setCategory(e.target.value)}
+        className="border rounded p-2"
       />
+
+      {/* Source filter */}
       <input
         type="text"
         placeholder="Source"
         value={source}
-        onChange={(e) => setSource(e.target.value)} // Source filter
-        className="ml-2 border rounded p-2"
+        onChange={(e) => setSource(e.target.value)}
+        className="border rounded p-2"
       />
-      <button type="submit" className="ml-2 bg-blue-500 text-white rounded p-2">Search</button>
+
+      {/* Submit button */}
+      <button type="submit" className="bg-blue-500 text-white rounded p-2">
+        Search
+      </button>
     </form>
   );
 };

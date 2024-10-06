@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\PreferencesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,7 +29,11 @@ Route::middleware('web')->group(function () {
 // Protected Routes
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/articles', [ArticleController::class, 'index']);
-    Route::get('/articles/search', [ArticleController::class, 'searchAndFilter']); // Combined search and filter
+    Route::post('/preferences', [PreferencesController::class, 'savePreferences']);
+    Route::get('/preferences', [PreferencesController::class, 'index']); // This should work
+
+
+    // Route::get('/articles/search', [ArticleController::class, 'searchAndFilter']); // Combined search and filter
     Route::get('/articles/{id}', [ArticleController::class, 'show']); // Fetch a single article by ID
     Route::post('/articles', [ArticleController::class, 'store']);    // Create a new article
     Route::put('/articles/{id}', [ArticleController::class, 'update']); // Update an existing article
