@@ -12,7 +12,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Ensure that all filters are passed correctly
     onSearch(query, { date, category, source });
   };
 

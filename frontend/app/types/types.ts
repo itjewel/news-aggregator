@@ -1,5 +1,3 @@
-// types.ts
-
 export interface Article {
     id: string | number;
     title: string;

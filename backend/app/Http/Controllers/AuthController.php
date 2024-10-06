@@ -20,14 +20,12 @@ class AuthController extends Controller
             'password' => 'required|string|min:6|confirmed',
         ]);
 
-        // Create the user
         $user = User::create([
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
             'password' => Hash::make($validatedData['password']),
         ]);
 
-        // Return a success response
         return response()->json(['message' => 'User registered successfully', 'user' => $user], 201);
     }
 
@@ -45,7 +43,6 @@ class AuthController extends Controller
 
         $user = Auth::user();
         $token = $user->createToken('token_name')->plainTextToken;
-        // Dispatch the job to fetch news after successful login
         FetchNewsJob::dispatch();
         return response()->json(['token' => $token, 'user' => $user], 200);
     }

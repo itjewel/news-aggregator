@@ -3,19 +3,19 @@ import Header from '../../components/Header';
 import { useState } from 'react';
 import axiosInstance from '../../utils/axiosInstance';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '../../context/AuthContext'; // Import the useAuth hook
+import { useAuth } from '../../context/AuthContext';
 import Link from 'next/link';
 
 const Login = () => {
     const router = useRouter();
-    const { login } = useAuth(); // Destructure login from useAuth context
+    const { login } = useAuth(); 
     const [formData, setFormData] = useState({
         email: '',
         password: '',
     });
     const [error, setError] = useState<string | null>(null);
     const [message, setMessage] = useState<string | null>(null);
-    const [loading, setLoading] = useState(false); // Loading state
+    const [loading, setLoading] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -25,12 +25,12 @@ const Login = () => {
       e.preventDefault();
       setError(null);
       setMessage(null);
-      setLoading(true); // Start loading
+      setLoading(true); 
   
       try {
           const response = await axiosInstance.post('/login', formData);
-          const { user, token } = response.data; // Destructure user and token from response
-          console.log('Received token:', token); // Log the token here
+          const { user, token } = response.data; 
+          console.log('Received token:', token); 
           
           if (!token) {
               setError('Token not received from server.');
@@ -38,10 +38,9 @@ const Login = () => {
               return;
           }
   
-          login(token); // Store the token in the context
-          setMessage('Login successful! Welcome, ' + user.name); // You can personalize the message
-          setFormData({ email: '', password: '' }); // Reset form data
-          router.push('/'); // Redirect to home or dashboard
+          login(token); 
+          setMessage('Login successful! Welcome, ' + user.name); 
+          router.push('/'); 
       } catch (error) {
           setError(error.response?.data.message || 'An error occurred');
       } finally {

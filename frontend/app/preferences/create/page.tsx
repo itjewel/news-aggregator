@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import Header from '../../components/Header'; // Import Header
+import Header from '../../components/Header'; 
 
 export default function Preferences() {
   const [source, setSource] = useState('');
@@ -8,11 +8,11 @@ export default function Preferences() {
   const [author, setAuthor] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false); // Loading state
+  const [loading, setLoading] = useState(false); 
 
   const savePreferences = async () => {
     const token = localStorage.getItem('token');
-    setLoading(true); // Set loading to true before the fetch call
+    setLoading(true);
 
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/preferences`, {
@@ -32,17 +32,15 @@ export default function Preferences() {
 
       const data = await response.json();
       setMessage(data.message);
-      setError(''); // Clear any previous errors
-
-      // Reset form fields after successful submission
+      setError(''); 
       setSource('');
       setCategory('');
       setAuthor('');
     } catch (error) {
       setError(error.message);
-      setMessage(''); // Clear any previous messages
+      setMessage(''); 
     } finally {
-      setLoading(false); // Set loading to false after the fetch call is complete
+      setLoading(false);
     }
   };
 
@@ -55,7 +53,7 @@ export default function Preferences() {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              savePreferences(); // Call the savePreferences function on form submit
+              savePreferences(); 
             }}
             className="space-y-4"
           >
@@ -63,27 +61,27 @@ export default function Preferences() {
               type="text"
               placeholder="Preferred Source"
               value={source}
-              onChange={(e) => setSource(e.target.value)} // Update source state
+              onChange={(e) => setSource(e.target.value)} 
               className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <input
               type="text"
               placeholder="Preferred Category"
               value={category}
-              onChange={(e) => setCategory(e.target.value)} // Update category state
+              onChange={(e) => setCategory(e.target.value)}
               className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <input
               type="text"
               placeholder="Preferred Author"
               value={author}
-              onChange={(e) => setAuthor(e.target.value)} // Update author state
+              onChange={(e) => setAuthor(e.target.value)} 
               className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <button
               type="submit"
               className={`w-full py-2 px-4 ${loading ? 'bg-gray-400' : 'bg-blue-500'} text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300`}
-              disabled={loading} // Disable button when loading
+              disabled={loading} 
             >
               {loading ? 'Loading...' : 'Save Preferences'}
             </button>

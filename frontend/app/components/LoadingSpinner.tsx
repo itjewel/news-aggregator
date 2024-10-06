@@ -1,5 +1,5 @@
-import { FaSpinner } from 'react-icons/fa'; // Importing from FontAwesome
-import { IconContext } from 'react-icons'; // Optional: Customize icon styles globally
+import { FaSpinner } from 'react-icons/fa'; 
+import { IconContext } from 'react-icons'; 
 
 const LoadingSpinner = () => {
   return (

@@ -1,16 +1,16 @@
 import axios from "axios";
 
 interface Filters {
-  date?: string;       // Date filter
-  category?: string;   // Category filter
-  source?: string;     // Source filter
+  date?: string;       
+  category?: string;  
+  source?: string;     
 }
 
 export const fetchArticles = async (
   query: string,
   page: number = 1,
   limit: number = 10,
-  filters: Filters = {} // Filters as optional object
+  filters: Filters = {}
 ): Promise<FetchArticlesResponse> => {
   try {
     const token = localStorage.getItem('token');
@@ -20,7 +20,6 @@ export const fetchArticles = async (
 
     // Base URL
     let url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/articles`;
-    // Parameters object for query string
     const params: { [key: string]: any } = {
       page,
       limit,
@@ -30,7 +29,6 @@ export const fetchArticles = async (
       ...(filters.source ? { source: filters.source } : {}),
     };
 
-    // Make the request
     const response = await axios.get<FetchArticlesResponse>(url, { headers, params });
 
     const articles: Article[] = response.data.data;

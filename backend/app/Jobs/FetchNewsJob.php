@@ -36,7 +36,7 @@ class FetchNewsJob implements ShouldQueue
                     foreach ($responseData['articles'] as $articleData) {
                         if (!isset($articleData['title'], $articleData['content'])) {
                             Log::warning("Article missing required fields: " . json_encode($articleData));
-                            continue; // Skip to the next article
+                            continue;
                         }
 
                         $publishedAt = isset($articleData['publishedAt']) ? Carbon::parse($articleData['publishedAt'])->format('Y-m-d H:i:s') : null;

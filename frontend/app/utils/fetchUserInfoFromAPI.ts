@@ -12,7 +12,7 @@ const fetchUserInfoFromAPI = async (token: string, setUser: React.Dispatch<React
         }
 
         const userInfo = await response.json();
-        setUser(userInfo); // Set the user in your state
+        setUser(userInfo); 
     } catch (error) {
         console.error('Failed to fetch user info', error);
     }

@@ -1,14 +1,14 @@
 import Link from 'next/link';
-import { useAuth } from '../context/AuthContext'; // Adjust the path as needed
-import { useRouter } from 'next/navigation'; // Import useRouter
+import { useAuth } from '../context/AuthContext';
+import { useRouter } from 'next/navigation'; 
 
 const Header = () => {
     const { user, logout } = useAuth();
-    const router = useRouter(); // Initialize useRouter
+    const router = useRouter();
 
     const handleLogout = () => {
         logout();
-        router.push('/auth/login'); // Use router for navigation after logout
+        router.push('/auth/login'); 
     };
 
     return (

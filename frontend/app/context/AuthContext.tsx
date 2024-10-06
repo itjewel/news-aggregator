@@ -50,7 +50,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 const decoded: User = jwtDecode(savedToken);
                 setUser(decoded);
             } else {
-                // Fetch user info from the API for non-JWT token
                 fetchUserInfoFromAPI(savedToken, setUser);
             }
         }
@@ -64,7 +63,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 const decoded: User = jwtDecode(token);
                 setUser(decoded);
             } else {
-                // Fetch user info from the API for non-JWT token
                 fetchUserInfoFromAPI(token, setUser);
             }
         } else {

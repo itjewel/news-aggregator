@@ -1,9 +1,8 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation'; // Import useRouter from Next.js
-import Header from '../components/Header'; // Import the Header component
+import { useRouter } from 'next/navigation'; 
+import Header from '../components/Header'; 
 
-// Define the Preference interface
 interface Preference {
     source: string;
     category: string;
@@ -12,9 +11,9 @@ interface Preference {
 
 // Update the Preferences component
 const Preferences = (): JSX.Element => {
-    const [preferences, setPreferences] = useState<Preference | null>(null); // Type preferences as Preference or null
-    const [error, setError] = useState<string | null>(null); // Type error as string or null
-    const router = useRouter(); // Initialize useRouter
+    const [preferences, setPreferences] = useState<Preference | null>(null); 
+    const [error, setError] = useState<string | null>(null);
+    const router = useRouter(); 
 
     useEffect(() => {
         const fetchPreferences = async () => {
@@ -25,7 +24,7 @@ const Preferences = (): JSX.Element => {
                     credentials: 'include',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`, // Include the token in the Authorization header
+                        'Authorization': `Bearer ${token}`,
                     },
                 });
 
@@ -33,11 +32,11 @@ const Preferences = (): JSX.Element => {
                     throw new Error('Failed to fetch preferences');
                 }
 
-                const data: Preference = await response.json(); // Type data as Preference
+                const data: Preference = await response.json();
                 setPreferences(data);
             } catch (error) {
                 if (error instanceof Error) {
-                    setError(error.message); // Ensure error is an instance of Error
+                    setError(error.message); 
                 }
             }
         };
@@ -46,12 +45,12 @@ const Preferences = (): JSX.Element => {
     }, []);
 
     const handleAddPreference = () => {
-        router.push('/preferences/create'); // Redirect to the create preference page
+        router.push('/preferences/create'); 
     };
 
     return (
         <div>
-            <Header /> {/* Add the Header component here */}
+            <Header /> 
             <main className="p-4 flex justify-between items-center">
                 <h1 className="text-2xl font-bold mb-4">User Preferences</h1>
                 <button
@@ -63,11 +62,11 @@ const Preferences = (): JSX.Element => {
             </main>
             <div className="p-4">
                {error && <p className="text-red-500">Error: {error}</p>}
-                {preferences ? ( // Ensure preferences is not null or undefined
+                {preferences ? ( 
                     <div>
-                        {Array.isArray(preferences) && preferences.length > 0 ? ( // Check if preferences is an array and has elements
-                            preferences.map((preference, index) => ( // Use map to iterate over each preference
-                                <div key={index} className="bg-white rounded-lg shadow-md p-4 mb-4"> {/* Use a unique key for each item */}
+                        {Array.isArray(preferences) && preferences.length > 0 ? ( 
+                            preferences.map((preference, index) => ( 
+                                <div key={index} className="bg-white rounded-lg shadow-md p-4 mb-4"> 
                                     <ul className="space-y-2">
                                         <li className="text-lg">
                                             Source: <span className="font-semibold">{preference.source}</span>
@@ -82,7 +81,7 @@ const Preferences = (): JSX.Element => {
                                 </div>
                             ))
                         ) : (
-                            <p className="text-gray-500">No preferences found.</p> // Message if no preferences are available
+                            <p className="text-gray-500">No preferences found.</p>
                         )}
                     </div>
                 ) : (
