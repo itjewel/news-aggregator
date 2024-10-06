@@ -24,9 +24,8 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->registerPolicies();
-        Artisan::call('news:fetch');
+        // $this->registerPolicies();
+        // Artisan::call('news:fetch');
 
-        //
     }
 }

@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\PreferencesController;
 
 /*
@@ -17,8 +18,6 @@ use App\Http\Controllers\PreferencesController;
 |
 */
 
-// CSRF Test Route (if needed)
-Route::middleware('web')->get('/test-csrf', [AuthController::class, 'testCsrf']);
 
 // Authentication Routes
 Route::middleware('web')->group(function () {
@@ -28,17 +27,9 @@ Route::middleware('web')->group(function () {
 
 // Protected Routes
 Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/user-info', [UserController::class, 'getUserInfo']);
     Route::get('/articles', [ArticleController::class, 'index']);
     Route::post('/preferences', [PreferencesController::class, 'savePreferences']);
-    Route::get('/preferences', [PreferencesController::class, 'index']); // This should work
-
-
-    // Route::get('/articles/search', [ArticleController::class, 'searchAndFilter']); // Combined search and filter
+    Route::get('/preferences', [PreferencesController::class, 'index']);
     Route::get('/articles/{id}', [ArticleController::class, 'show']); // Fetch a single article by ID
-    Route::post('/articles', [ArticleController::class, 'store']);    // Create a new article
-    Route::put('/articles/{id}', [ArticleController::class, 'update']); // Update an existing article
-    Route::delete('/articles/{id}', [ArticleController::class, 'destroy']); // Delete an article
 });
-
-// Additional routes if needed
-// You can also place any other routes here if necessary

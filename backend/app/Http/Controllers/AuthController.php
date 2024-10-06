@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Jobs\FetchNewsJob;
 
 class AuthController extends Controller
 {
@@ -44,7 +45,8 @@ class AuthController extends Controller
 
         $user = Auth::user();
         $token = $user->createToken('token_name')->plainTextToken;
-
+        // Dispatch the job to fetch news after successful login
+        FetchNewsJob::dispatch();
         return response()->json(['token' => $token, 'user' => $user], 200);
     }
 }

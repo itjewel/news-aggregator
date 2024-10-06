@@ -32,12 +32,6 @@ class PreferencesController extends Controller
         // Get the authenticated user
         $user = auth()->user();
 
-        // Check if preferences already exist for the user
-        // $existingPreference = UserPreference::where('user_id', $user->id)->first();
-
-        // if ($existingPreference) {
-        //     return response()->json(['message' => 'Preferences already set, cannot be modified.'], 400);
-        // }
 
         // Create the preferences for the user
         UserPreference::create(array_merge($validatedData, ['user_id' => $user->id]));

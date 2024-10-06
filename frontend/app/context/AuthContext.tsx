@@ -1,8 +1,8 @@
-// AuthProvider.tsx
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import jwtDecode from 'jwt-decode';
+import fetchUserInfoFromAPI from '../utils/fetchUserInfoFromAPI';
 
 interface User {
     id: number;
@@ -24,7 +24,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [token, setToken] = useState<string | null>(null);
 
     const isJWT = (token: string) => {
-        return token.split('.').length === 3; // A JWT token will have 3 parts
+        return token.split('.').length === 3; 
     };
 
     const isValidToken = (token: string | null): boolean => {
@@ -32,7 +32,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         try {
             if (isJWT(token)) {
                 const decoded = jwtDecode<User>(token);
-                return !!decoded; // If decoding succeeds, it's valid
+                return !!decoded; 
             } else {
                 return true; // Assume non-JWT tokens are valid
             }
@@ -44,15 +44,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     useEffect(() => {
         const savedToken = localStorage.getItem('token');
-        console.log('Retrieved token:', savedToken); // Log the retrieved token
         if (savedToken && isValidToken(savedToken)) {
             setToken(savedToken);
             if (isJWT(savedToken)) {
                 const decoded: User = jwtDecode(savedToken);
                 setUser(decoded);
             } else {
-                // Placeholder for non-JWT token user data
-                setUser({ id: 1, name: 'John Doe', email: 'johndoe@example.com' });
+                // Fetch user info from the API for non-JWT token
+                fetchUserInfoFromAPI(savedToken, setUser);
             }
         }
     }, []);
@@ -60,14 +59,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const login = (token: string) => {
         if (isValidToken(token)) {
             localStorage.setItem('token', token);
-            console.log('Token saved:', token); // Log the saved token
             setToken(token);
             if (isJWT(token)) {
                 const decoded: User = jwtDecode(token);
                 setUser(decoded);
             } else {
-                // Placeholder for non-JWT token user data
-                setUser({ id: 1, name: 'John Doe', email: 'johndoe@example.com' });
+                // Fetch user info from the API for non-JWT token
+                fetchUserInfoFromAPI(token, setUser);
             }
         } else {
             console.error('Invalid token during login');

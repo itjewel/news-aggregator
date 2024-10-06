@@ -1,5 +1,7 @@
 import React from 'react';
 import dayjs from 'dayjs';
+import Link from 'next/link';
+import { Article } from '../types/types';
 
 interface Preference {
   source?: string;
@@ -7,17 +9,7 @@ interface Preference {
   author?: string;
 }
 
-interface Article {
-  id: string | number;
-  title: string;
-  description: string;
-  url: string;
-  source?: string;
-  category?: string;
-  author?: string;
-  created_at?: string;
-  published_at?: string;
-}
+
 
 interface ArticleListProps {
   articles: Article[];
@@ -33,8 +25,7 @@ const ArticleList: React.FC<ArticleListProps> = ({ articles = [], preferences = 
     return articles.filter(article => {
       const matchesSource = preferences.source ? article.source === preferences.source : true;
       const matchesCategory = preferences.category ? article.category === preferences.category : true;
-      const matchesAuthor = preferences.author ? article.author === preferences.author : true;
-      return matchesSource && matchesCategory && matchesAuthor;
+      return matchesSource && matchesCategory;
     });
   }, [articles, preferences]);
 
@@ -43,15 +34,18 @@ const ArticleList: React.FC<ArticleListProps> = ({ articles = [], preferences = 
       {filteredArticles.length > 0 ? (
         <ul className="space-y-4">
           {filteredArticles.map(article => (
-            <li key={article.id} className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
-              <a href={article.url} target="_blank" rel="noopener noreferrer" className="text-xl font-semibold text-blue-600 hover:underline">
-                {article.title}
-              </a>
-              <p className="text-gray-600">{article.description}</p>
+            <li key={article.id} className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">              
+             <Link
+              href={`/articles/${article.id}`}
+              rel="noopener noreferrer"
+              className="text-xl font-semibold text-blue-600 hover:underline"
+            >
+              {article.title}
+            </Link>
+
               <div className="mt-2 text-sm text-gray-500">
                 {article.source && <span>Source: {article.source}</span>}
                 {article.category && <span className="ml-2">Category: {article.category}</span>}
-                {article.author && <span className="ml-2">Author: {article.author}</span>}
                 {article.created_at && <span className="ml-2">Created: {dayjs(article.created_at).format('MMMM D, YYYY h:mm A')}</span>}
                 {article.published_at && <span className="ml-2">Published: {dayjs(article.published_at).format('MMMM D, YYYY h:mm A')}</span>}
               </div>

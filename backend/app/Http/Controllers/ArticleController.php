@@ -37,9 +37,6 @@ class ArticleController extends Controller
                     // Use Carbon to parse the date in a flexible way
                     $parsedDate = \Carbon\Carbon::parse($date)->format('Y-m-d');
 
-                    // Debugging: Log or display the parsed date
-
-
                     // Filter by date, ignoring the time portion
                     $query->whereDate('created_at', $parsedDate);
                 } catch (\Exception $e) {
@@ -62,6 +59,23 @@ class ArticleController extends Controller
             return response()->json(['success' => false, 'message' => 'No articles found'], 404);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'An error occurred while fetching articles'], 500);
+        }
+    }
+
+    public function show($id): JsonResponse
+    {
+        try {
+            // Find the article by ID
+            $article = Article::findOrFail($id);
+
+            // Return the found article as a JSON response
+            return response()->json(['success' => true, 'data' => $article], 200);
+        } catch (ModelNotFoundException $e) {
+            // If the article is not found, return a 404 response
+            return response()->json(['success' => false, 'message' => 'Article not found'], 404);
+        } catch (\Exception $e) {
+            // Handle any other exceptions
+            return response()->json(['success' => false, 'message' => 'An error occurred while fetching the article'], 500);
         }
     }
 }

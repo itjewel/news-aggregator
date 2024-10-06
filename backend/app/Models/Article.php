@@ -15,6 +15,5 @@ class Article extends Model
         'source',       // Source of the article (e.g., newsapi, theguardian)
         'content',      // Content of the article
         'published_at', // Publication date of the article
-        // Add other fields as necessary
     ];
 }
