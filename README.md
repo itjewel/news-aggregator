@@ -60,7 +60,7 @@ Here is a preview of the Register:
 
 Here is a preview of add preference:
 
-![Food Pack Api](https://github.com/itjewel/news-aggregator/blob/main/screenshort/add_prefrence.png)
+![Food Pack Api](https://github.com/itjewel/news-aggregator/blob/main/screenshort/add_preference.png)
 
 ## Preview List of preference
 
