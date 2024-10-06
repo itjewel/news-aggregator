@@ -55,3 +55,15 @@ Here is a preview of the Login:
 Here is a preview of the Register:
 
 ![Food Pack Api](https://github.com/itjewel/news-aggregator/blob/main/screenshort/register.png)
+
+## Preview add preference
+
+Here is a preview of add preference:
+
+![Food Pack Api](https://github.com/itjewel/news-aggregator/blob/main/screenshort/add_prefrence.png)
+
+## Preview List of preference
+
+Here is a preview of preferences:
+
+![Food Pack Api](https://github.com/itjewel/news-aggregator/blob/main/screenshort/preferences.png)
