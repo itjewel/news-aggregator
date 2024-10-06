@@ -48,22 +48,22 @@ Here is a preview of the Home Page feature:
 
 Here is a preview of the Login:
 
-![Post Restaurant Api](https://github.com/itjewel/news-aggregator/blob/main/screenshort/login.png)
+![Login Page](https://github.com/itjewel/news-aggregator/blob/main/screenshort/login.png)
 
 ## Preview of Register
 
 Here is a preview of the Register:
 
-![Food Pack Api](https://github.com/itjewel/news-aggregator/blob/main/screenshort/register.png)
+![Register Page](https://github.com/itjewel/news-aggregator/blob/main/screenshort/register.png)
 
 ## Preview add preference
 
 Here is a preview of add preference:
 
-![Food Pack Api](https://github.com/itjewel/news-aggregator/blob/main/screenshort/add_preference.png)
+![Preference](https://github.com/itjewel/news-aggregator/blob/main/screenshort/add_preference.png)
 
 ## Preview List of preference
 
 Here is a preview of preferences:
 
-![Food Pack Api](https://github.com/itjewel/news-aggregator/blob/main/screenshort/preferences.png)
+![Preferences](https://github.com/itjewel/news-aggregator/blob/main/screenshort/preferences.png)
