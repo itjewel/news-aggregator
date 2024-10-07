@@ -35,6 +35,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
       />
 
       {/* Category filter */}
+    
       <input
         type="text"
         placeholder="Category"
@@ -44,13 +45,17 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
       />
 
       {/* Source filter */}
-      <input
-        type="text"
-        placeholder="Source"
+      <select
         value={source}
         onChange={(e) => setSource(e.target.value)}
         className="border rounded p-2"
-      />
+      >
+         <option value="">All Source</option>
+        <option value="newsapi">NewsAPI</option>
+        <option value="theguardian">The Guardian</option>
+        <option value="nytimes">NY Times</option>
+      </select>
+
 
       {/* Submit button */}
       <button type="submit" className="bg-blue-500 text-white rounded p-2">

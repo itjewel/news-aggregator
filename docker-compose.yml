@@ -15,9 +15,9 @@ services:
       - DB_CONNECTION=mysql
       - DB_HOST=db
       - DB_PORT=3306
-      - DB_DATABASE=your_database
-      - DB_USERNAME=your_username
-      - DB_PASSWORD=your_password
+      - DB_DATABASE=news-aggregator
+      - DB_USERNAME=root
+      - DB_PASSWORD=admin
     depends_on:
       - db
 
@@ -25,11 +25,9 @@ services:
     image: mysql:8.0
     container_name: mysql-db
     ports:
-      - "3306:3306"  # Expose MySQL on port 3306
+      - "3307:3306"  # Expose MySQL on host port 3307
     environment:
       - MYSQL_DATABASE=news-aggregator
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=admin
       - MYSQL_ROOT_PASSWORD=admin
     volumes:
       - db_data:/var/lib/mysql  # Persist database data
@@ -41,11 +39,26 @@ services:
     image: nextjs-app
     container_name: nextjs-app
     ports:
-      - "3000:3000"  # Expose Next.js app on port 3000
+      - "3001:3000"  # Expose Next.js app on host port 3001
     volumes:
       - ./frontend:/app  # Mount the frontend code
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000  # Set API URL to Laravel backend
     depends_on:
       - app  # Ensure the backend is available before starting the frontend
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    ports:
+      - "8080:80"  # Expose PhpMyAdmin on host port 8080
+    environment:
+      - PMA_HOST=db  # Set MySQL host
+      - PMA_PORT=3306  # MySQL port
+      - PMA_USER=root  # MySQL user
+      - PMA_PASSWORD=admin  # MySQL password
+    depends_on:
+      - db  # Ensure the database is available before starting PhpMyAdmin
 
 volumes:
   db_data:

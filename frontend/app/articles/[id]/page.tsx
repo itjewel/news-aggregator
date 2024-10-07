@@ -1,9 +1,10 @@
-// app/articles/[id]/page.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Article } from '../../types/types'; // Import the Article type
-import Header from '../../components/Header'; // Import Header
+import { Article } from '../../types/types';
+import Header from '../../components/Header';
+import Link from 'next/link';
+import DOMPurify from 'dompurify';
 
 interface ArticlePageProps {
   params: {
@@ -42,6 +43,8 @@ export default function ArticlePage({ params }: ArticlePageProps) {
     fetchArticle();
   }, [params.id]);
 
+  const sanitizedContent = article ? DOMPurify.sanitize(article.content) : '';
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       <Header />
@@ -53,7 +56,10 @@ export default function ArticlePage({ params }: ArticlePageProps) {
         ) : article ? (
           <div className="bg-white rounded-lg shadow-md p-6 max-w-3xl w-full">
             <h1 className="text-3xl font-bold mb-4">{article.title}</h1>
-            <p className="text-gray-600 mb-4">{article.content}</p>
+            <div
+              className="text-gray-600 mb-4"
+              dangerouslySetInnerHTML={{ __html: sanitizedContent }} // Renders sanitized HTML
+            />
             <div className="text-sm text-gray-500 mb-4">
               {article.source && <span>Source: {article.source}</span>}
               {article.category && <span className="ml-4">Category: {article.category}</span>}
@@ -63,13 +69,13 @@ export default function ArticlePage({ params }: ArticlePageProps) {
                 </span>
               )}
             </div>
-            <a
+            <Link
               href='/'
               rel="noopener noreferrer"
               className="text-blue-600 hover:underline"
             >
               Back
-            </a>
+            </Link>
           </div>
         ) : (
           <p>No article found.</p>
