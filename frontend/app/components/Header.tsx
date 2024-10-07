@@ -14,7 +14,7 @@ const Header = () => {
     return (
         <header className="bg-gray-800 p-4 text-white">
             <nav className="flex justify-between items-center">
-                <Link href="/" className="text-xl font-bold hover:underline">Home</Link>
+                <Link href="/" className="text-xl font-bold hover:underline">News</Link>
                 <div className="flex items-center">
                     {user ? (
                         <>

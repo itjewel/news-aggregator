@@ -1,14 +1,17 @@
 'use client';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation'; // Import useRouter
 import Header from '../../components/Header'; 
 
 export default function Preferences() {
   const [source, setSource] = useState('');
   const [category, setCategory] = useState('');
-  const [author, setAuthor] = useState('');
+  // const [author, setAuthor] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false); 
+
+  const router = useRouter(); // Initialize router
 
   const savePreferences = async () => {
     const token = localStorage.getItem('token');
@@ -21,7 +24,7 @@ export default function Preferences() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({ source, category, author }),
+        body: JSON.stringify({ source, category }),
       });
 
       if (!response.ok) {
@@ -35,7 +38,8 @@ export default function Preferences() {
       setError(''); 
       setSource('');
       setCategory('');
-      setAuthor('');
+      
+      router.push('/preferences');
     } catch (error) {
       setError(error.message);
       setMessage(''); 
@@ -57,13 +61,17 @@ export default function Preferences() {
             }}
             className="space-y-4"
           >
-            <input
-              type="text"
-              placeholder="Preferred Source"
+            <select
               value={source}
-              onChange={(e) => setSource(e.target.value)} 
+              onChange={(e) => setSource(e.target.value)}
               className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            >
+              <option value="">All Source</option>
+              <option value="newsapi">NewsAPI</option>
+              <option value="theguardian">The Guardian</option>
+              <option value="nytimes">NY Times</option>
+            </select>
+           
             <input
               type="text"
               placeholder="Preferred Category"
@@ -71,13 +79,13 @@ export default function Preferences() {
               onChange={(e) => setCategory(e.target.value)}
               className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <input
+            {/* <input
               type="text"
               placeholder="Preferred Author"
               value={author}
               onChange={(e) => setAuthor(e.target.value)} 
               className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            /> */}
             <button
               type="submit"
               className={`w-full py-2 px-4 ${loading ? 'bg-gray-400' : 'bg-blue-500'} text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300`}

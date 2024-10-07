@@ -8,7 +8,6 @@ use Illuminate\Validation\ValidationException;
 
 class PreferencesController extends Controller
 {
-
     public function index()
     {
         $user = auth()->user();
@@ -27,8 +26,17 @@ class PreferencesController extends Controller
 
         $user = auth()->user();
 
-        UserPreference::create(array_merge($validatedData, ['user_id' => $user->id]));
+        // Check if preferences already exist for the user
+        $preference = UserPreference::where('user_id', $user->id)->first();
 
-        return response()->json(['message' => 'Preferences saved successfully'], 200);
+        if ($preference) {
+            // Update existing preferences
+            $preference->update($validatedData);
+            return response()->json(['message' => 'Preferences updated successfully'], 200);
+        } else {
+            // Create new preferences
+            UserPreference::create(array_merge($validatedData, ['user_id' => $user->id]));
+            return response()->json(['message' => 'Preferences saved successfully'], 201);
+        }
     }
 }

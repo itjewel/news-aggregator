@@ -50,12 +50,11 @@ class FetchNewsJob implements ShouldQueue
                 foreach ($articles as $articleData) {
                     Log::info("Processing article from $source: " . json_encode($articleData));
 
-                    // Initialize variables for title, content, and published date
                     $title = null;
                     $content = null;
                     $publishedAt = null;
 
-                    // Handle data extraction based on the source
+
                     switch ($source) {
                         case 'newsapi':
                             $title = $articleData['title'] ?? null;
@@ -76,16 +75,12 @@ class FetchNewsJob implements ShouldQueue
                             break;
                     }
 
-                    // Skip the article if the title or content is missing
                     if (!$title || !$content) {
                         Log::warning("Skipping article with missing title or content: " . json_encode($articleData));
                         continue;
                     }
 
-                    // Truncate content to fit within the database's column size limits
-                    $content = substr($content, 0, 65535); // Ensure content does not exceed TEXT limit
-
-                    // Check if the article already exists in the database
+                    $content = substr($content, 0, 65535);
                     $existingArticle = Article::where('title', $title)
                         ->where('source', $source)
                         ->first();
@@ -99,7 +94,7 @@ class FetchNewsJob implements ShouldQueue
                             [
                                 'content' => $content,
                                 'published_at' => $publishedAt,
-                                'category' => 'Uncategorized', // Optionally update the category if available
+                                'category' => 'Uncategorized',
                             ]
                         );
                         Log::info("Inserted article: " . $title);

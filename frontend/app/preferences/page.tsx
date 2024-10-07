@@ -74,9 +74,9 @@ const Preferences = (): JSX.Element => {
                                         <li className="text-lg">
                                             Category: <span className="font-semibold">{preference.category}</span>
                                         </li>
-                                        <li className="text-lg">
+                                        {/* <li className="text-lg">
                                             Author: <span className="font-semibold">{preference.author}</span>
-                                        </li>
+                                        </li> */}
                                     </ul>
                                 </div>
                             ))
