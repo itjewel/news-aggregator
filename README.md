@@ -11,17 +11,19 @@ App Name `news-aggregator` then enter inside after that you see `backend` and `f
 
 **_ Backend Laravel Install _**
 
-1. Go into the folder `backend` then open terminal & run command `composer install`
+1. Create `.env` file then copy `.env.example` paste in `.env`
+2. Go into the folder `backend` then open terminal & run command `composer install`
 
-2) After install then run `php artisan serve`
-3) Then you will get url for backend: `http://localhost:8000/`
+3) After install then run `php artisan serve`
+4) Then you will get url for backend: `http://localhost:8000/`
 
 **_ Front-end NextJS Install _**
 
-1. Go into the folder `frontend` then open terminal & run command `npm install`
+1. Create `.env.local` file then copy `.env.local.example` paste in `.env.local`
+2. Go into the folder `frontend` then open terminal & run command `npm install`
 
-2) After install then run `npm run dev`
-3) Then you will get url for backend: `http://localhost:8000/`
+3) After install then run `npm run dev`
+4) Then you will get url for backend: `http://localhost:8000/`
 
 **_ By Docker Installation _**
 
